@@ -3,8 +3,8 @@ pipeline {
 
     environment {
         // Sử dụng Docker Hub credentials từ Jenkins
-        DOCKER_CREDENTIALS = credentials('my-docker-credentials')  // ID Docker Hub credentials
-        GITHUB_CREDENTIALS = credentials('my-github-token')  // ID GitHub credentials
+        DOCKER_CREDENTIALS = credentials('docker-hub-credentials')  // ID Docker Hub credentials
+        GITHUB_CREDENTIALS = credentials('github-access-token')  // ID GitHub credentials
     }
 
     stages {
