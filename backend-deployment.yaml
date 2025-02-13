@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hackathon-backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hackathon-backend
+  template:
+    metadata:
+      labels:
+        app: hackathon-backend
+    spec:
+      containers:
+      - name: hackathon-backend
+        image: doanh269/hackathon-backend:latest
+        ports:
+        - containerPort: 3000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: hackathon-backend-service
+spec:
+  selector:
+    app: hackathon-backend
+  ports:
+    - protocol: TCP
+      port: 3000
+      targetPort: 3000
+  type: ClusterIP
+
