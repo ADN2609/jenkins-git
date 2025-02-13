@@ -2,14 +2,14 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_CREDENTIALS = credentials('docker-hub-credentials')  // ID Docker Hub credentials
-        GITHUB_CREDENTIALS = credentials('github-access-token')  // ID GitHub credentials
+        DOCKER_CREDENTIALS = credentials('docker-hub-credentials')  // Đảm bảo đây là ID đúng của Docker Hub credentials
+        GITHUB_CREDENTIALS = credentials('github-access-token')  // Đảm bảo đây là ID đúng của GitHub credentials
     }
 
     stages {
         stage('Clone Repository') {
             steps {
-                // Lấy mã nguồn từ GitHub
+                // Clone mã nguồn từ GitHub
                 git credentialsId: 'github-access-token', url: 'https://github.com/ADN2609/jenkins-git.git', branch: 'main'
             }
         }
@@ -35,7 +35,7 @@ pipeline {
         stage('Push Docker Images') {
             steps {
                 script {
-                    // Push Docker images lên Docker Hub (nếu cần)
+                    // Push Docker images lên Docker Hub
                     docker.withRegistry('https://index.docker.io/v1/', DOCKER_CREDENTIALS) {
                         docker.image('doanh269/hackathon-backend:latest').push()
                         docker.image('doanh269/hackathon-frontend:latest').push()
