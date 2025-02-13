@@ -11,7 +11,7 @@ pipeline {
         stage('Clone Repository') {
             steps {
                 // Lấy mã nguồn từ GitHub
-                git credentialsId: 'my-github-token', url: 'https://github.com/ADN2609/jenkins-git', branch: '*/main'
+                git credentialsId: 'my-github-token', url: 'https://github.com/ADN2609/jenkins-git.git', branch: '*/main'
             }
         }
 
