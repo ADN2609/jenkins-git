@@ -2,7 +2,6 @@ pipeline {
     agent any
 
     environment {
-        // Sử dụng Docker Hub credentials từ Jenkins
         DOCKER_CREDENTIALS = credentials('docker-hub-credentials')  // ID Docker Hub credentials
         GITHUB_CREDENTIALS = credentials('github-access-token')  // ID GitHub credentials
     }
@@ -15,20 +14,20 @@ pipeline {
             }
         }
 
-        stage('Build Backend Docker Image') {
+        stage('Pull Backend Docker Image') {
             steps {
                 script {
-                    // Build Docker image cho backend từ Dockerfile.backend
-                    docker.build('doanh269/hackathon-backend:latest', '-f Dockerfile.backend .')
+                    // Pull Docker image từ Docker Hub thay vì build lại
+                    docker.image('doanh269/hackathon-backend:latest').pull()
                 }
             }
         }
 
-        stage('Build Frontend Docker Image') {
+        stage('Pull Frontend Docker Image') {
             steps {
                 script {
-                    // Build Docker image cho frontend từ Dockerfile.frontend
-                    docker.build('doanh269/hackathon-frontend:latest', '-f Dockerfile.frontend .')
+                    // Pull Docker image từ Docker Hub thay vì build lại
+                    docker.image('doanh269/hackathon-frontend:latest').pull()
                 }
             }
         }
@@ -36,9 +35,8 @@ pipeline {
         stage('Push Docker Images') {
             steps {
                 script {
-                    // Đẩy Docker images lên Docker Hub
+                    // Push Docker images lên Docker Hub (nếu cần)
                     docker.withRegistry('https://index.docker.io/v1/', DOCKER_CREDENTIALS) {
-                        // Đẩy Docker images cho backend và frontend
                         docker.image('doanh269/hackathon-backend:latest').push()
                         docker.image('doanh269/hackathon-frontend:latest').push()
                     }
@@ -64,4 +62,3 @@ pipeline {
         }
     }
 }
-
