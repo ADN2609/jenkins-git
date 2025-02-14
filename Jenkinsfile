@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_CREDENTIALS = credentials('docker-hub-credentials')  // Đảm bảo đây là ID đúng của Docker Hub credentials
+        DOCKER_CREDENTIALS = credentials('Dockerhub')  // Đảm bảo đây là ID đúng của Docker Hub credentials
         GITHUB_CREDENTIALS = credentials('github-access-token')  // Đảm bảo đây là ID đúng của GitHub credentials
     }
 
