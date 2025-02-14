@@ -36,6 +36,7 @@ pipeline {
             steps {
                 script {
                     // Push Docker images lên Docker Hub
+                    echo "Docker Credentials: ${DOCKER_CREDENTIALS}"
                     docker.withRegistry('https://index.docker.io/v1/', DOCKER_CREDENTIALS) {
                         docker.image('doanh269/hackathon-backend:latest').push()
                         docker.image('doanh269/hackathon-frontend:latest').push()
