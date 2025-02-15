@@ -2,8 +2,8 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_CREDENTIALS = credentials('docker-hub-credentials')  //  ID của Docker Hub credentials
-        GITHUB_CREDENTIALS = credentials('github-access-token')  //  ID của GitHub credentials
+        DOCKER_CREDENTIALS = credentials('docker-hub-credentials')  // ID của Docker Hub credentials
+        GITHUB_CREDENTIALS = credentials('github-access-token')  // ID của GitHub credentials
     }
 
     stages {
@@ -16,7 +16,8 @@ pipeline {
         stage('Pull Backend Docker Image') {
             steps {
                 script {
-                    echo "Using Docker credentials for pull: ${DOCKER_CREDENTIALS}"
+                    // In thông báo mà không làm lộ thông tin nhạy cảm
+                    echo "Đang sử dụng Docker credentials để pull"
 
                     docker.image('doanh269/hackathon-backend:latest').pull()
                 }
@@ -26,7 +27,8 @@ pipeline {
         stage('Pull Frontend Docker Image') {
             steps {
                 script {
-                    echo "Using Docker credentials for pull: ${DOCKER_CREDENTIALS}"
+                    // In thông báo mà không làm lộ thông tin nhạy cảm
+                    echo "Đang sử dụng Docker credentials để pull"
 
                     docker.image('doanh269/hackathon-frontend:latest').pull()
                 }
@@ -36,13 +38,11 @@ pipeline {
         stage('Push Docker Images') {
             steps {
                 script {
-                    echo "Logging in to Docker Hub using credentials..."
+                    // Đăng nhập vào Docker Hub
+                    echo "Đang đăng nhập vào Docker Hub..."
 
                     docker.withRegistry('https://index.docker.io/v1/', DOCKER_CREDENTIALS) {
-                        echo "Pushing backend image to Docker Hub..."
                         docker.image('doanh269/hackathon-backend:latest').push()
-
-                        echo "Pushing frontend image to Docker Hub..."
                         docker.image('doanh269/hackathon-frontend:latest').push()
                     }
                 }
