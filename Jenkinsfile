@@ -2,8 +2,9 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_CREDENTIALS = credentials('Dockerhub')  // Đảm bảo đây là ID đúng của Docker Hub credentials
-        GITHUB_CREDENTIALS = credentials('github-access-token')  // Đảm bảo đây là ID đúng của GitHub credentials
+        // ID của Docker Hub credentials trong Jenkins
+        DOCKER_CREDENTIALS = credentials('docker-hub-credentials')  //  ID của Docker Hub credentials
+        GITHUB_CREDENTIALS = credentials('github-access-token')  //  ID của GitHub credentials
     }
 
     stages {
@@ -17,6 +18,9 @@ pipeline {
         stage('Pull Backend Docker Image') {
             steps {
                 script {
+                    // Debug output để kiểm tra credentials
+                    echo "Using Docker credentials: ${DOCKER_CREDENTIALS}"
+
                     // Pull Docker image từ Docker Hub thay vì build lại
                     docker.image('doanh269/hackathon-backend:latest').pull()
                 }
@@ -26,6 +30,9 @@ pipeline {
         stage('Pull Frontend Docker Image') {
             steps {
                 script {
+                    // Debug output để kiểm tra credentials
+                    echo "Using Docker credentials: ${DOCKER_CREDENTIALS}"
+
                     // Pull Docker image từ Docker Hub thay vì build lại
                     docker.image('doanh269/hackathon-frontend:latest').pull()
                 }
@@ -35,10 +42,14 @@ pipeline {
         stage('Push Docker Images') {
             steps {
                 script {
-                    // Push Docker images lên Docker Hub
-                    echo "Docker Credentials: ${DOCKER_CREDENTIALS}"
+                    // Đảm bảo Docker có thể đăng nhập vào Docker Hub
+                    echo "Logging in to Docker Hub..."
                     docker.withRegistry('https://index.docker.io/v1/', DOCKER_CREDENTIALS) {
+                        // Push Docker images lên Docker Hub
+                        echo "Pushing backend image to Docker Hub..."
                         docker.image('doanh269/hackathon-backend:latest').push()
+
+                        echo "Pushing frontend image to Docker Hub..."
                         docker.image('doanh269/hackathon-frontend:latest').push()
                     }
                 }
@@ -49,7 +60,10 @@ pipeline {
             steps {
                 script {
                     // Áp dụng Kubernetes Deployment và Service
+                    echo "Deploying backend to Kubernetes..."
                     sh 'kubectl apply -f backend-deployment.yaml'
+                    
+                    echo "Deploying frontend to Kubernetes..."
                     sh 'kubectl apply -f frontend-deployment.yaml'
                 }
             }
