@@ -47,4 +47,30 @@ pipeline {
                         docker.image('doanh269/hackathon-backend:latest').push()
 
                         echo "Pushing frontend image to Docker Hub..."
-                        docker.image('
+                        docker.image('doanh269/hackathon-frontend:latest').push()
+                    }
+                }
+            }
+        }
+
+        stage('Deploy to Kubernetes') {
+            steps {
+                script {
+                    // Deploy Kubernetes Deployment và Service
+                    echo "Deploying backend to Kubernetes..."
+                    sh 'kubectl apply -f backend-deployment.yaml'
+                    
+                    echo "Deploying frontend to Kubernetes..."
+                    sh 'kubectl apply -f frontend-deployment.yaml'
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            // Dọn dẹp workspace sau khi build
+            cleanWs()
+        }
+    }
+}
