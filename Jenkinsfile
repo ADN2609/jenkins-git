@@ -4,6 +4,7 @@ pipeline {
     environment {
         DOCKER_CREDENTIALS = credentials('docker-hub-credentials')  // ID của Docker Hub credentials
         GITHUB_CREDENTIALS = credentials('github-access-token')  // ID của GitHub credentials
+        KUBECONFIG_PATH = '/path/to/your/kubeconfig'  // Đường dẫn tới tệp kubeconfig (cập nhật theo hệ thống của bạn)
     }
 
     stages {
@@ -45,19 +46,19 @@ pipeline {
             }
         }
 
-       stage('Deploy to Kubernetes') {
-    steps {
-        script {
-            // Cung cấp kubeconfig từ Jenkins credentials
-            withCredentials([file(credentialsId: 'kubeconfig-file', variable: 'KUBECONFIG')]) {
-                sh 'export KUBECONFIG=$KUBECONFIG'
-                sh 'kubectl config view'  // Kiểm tra thông tin kubeconfig
-                sh 'kubectl apply -f backend-deployment.yaml'
-                sh 'kubectl apply -f frontend-deployment.yaml'
+        stage('Deploy to Kubernetes') {
+            steps {
+                script {
+                    // Đảm bảo KUBECONFIG_PATH được set đúng đường dẫn tới kubeconfig
+                    withCredentials([file(credentialsId: 'kubeconfig-file', variable: 'KUBECONFIG')]) {
+                        sh 'export KUBECONFIG=$KUBECONFIG'
+                        sh 'kubectl apply -f backend-deployment.yaml'
+                        sh 'kubectl apply -f frontend-deployment.yaml'
+                    }
+                }
             }
         }
     }
-}
 
     post {
         always {
