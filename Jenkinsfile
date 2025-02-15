@@ -32,17 +32,20 @@ pipeline {
             }
         }
 
-        stage('Push Docker Images') {
-            steps {
-                script {
-                    echo "Đang đăng nhập vào Docker Hub..."
-                    docker.withRegistry('https://index.docker.io/v1/', DOCKER_CREDENTIALS) {
-                        docker.image('doanh269/hackathon-backend:latest').push()
-                        docker.image('doanh269/hackathon-frontend:latest').push()
-                    }
-                }
+stage('Push Docker Images') {
+    steps {
+        script {
+            // Đăng nhập Docker Hub với credentials
+            echo "Đang đăng nhập vào Docker Hub..."
+            withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+                sh 'echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin'
             }
+            docker.image('doanh269/hackathon-backend:latest').push()
+            docker.image('doanh269/hackathon-frontend:latest').push()
         }
+    }
+}
+
 
         stage('Deploy to Kubernetes') {
             steps {
