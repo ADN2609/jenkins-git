@@ -42,8 +42,10 @@ pipeline {
         stage('Push Docker Images') {
             steps {
                 script {
-                    // Đảm bảo Docker có thể đăng nhập vào Docker Hub
+                    // Debug output để kiểm tra Docker login
                     echo "Logging in to Docker Hub..."
+
+                    // Đảm bảo Docker có thể đăng nhập vào Docker Hub
                     docker.withRegistry('https://index.docker.io/v1/', DOCKER_CREDENTIALS) {
                         // Push Docker images lên Docker Hub
                         echo "Pushing backend image to Docker Hub..."
