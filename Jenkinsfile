@@ -45,20 +45,19 @@ pipeline {
             }
         }
 
-        stage('Deploy to Kubernetes') {
-            steps {
-                script {
-                    // Sử dụng kubeconfig từ Jenkins credentials
-                    withCredentials([file(credentialsId: 'kubeconfig-file', variable: 'KUBECONFIG')]) {
-                        // Đặt KUBECONFIG và deploy ứng dụng lên Kubernetes
-                        sh 'export KUBECONFIG=$KUBECONFIG'
-                        sh 'kubectl apply -f backend-deployment.yaml'
-                        sh 'kubectl apply -f frontend-deployment.yaml'
-                    }
-                }
+       stage('Deploy to Kubernetes') {
+    steps {
+        script {
+            // Cung cấp kubeconfig từ Jenkins credentials
+            withCredentials([file(credentialsId: 'kubeconfig-file', variable: 'KUBECONFIG')]) {
+                sh 'export KUBECONFIG=$KUBECONFIG'
+                sh 'kubectl config view'  // Kiểm tra thông tin kubeconfig
+                sh 'kubectl apply -f backend-deployment.yaml'
+                sh 'kubectl apply -f frontend-deployment.yaml'
             }
         }
     }
+}
 
     post {
         always {
