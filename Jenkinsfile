@@ -4,7 +4,7 @@ pipeline {
     environment {
         DOCKER_CREDENTIALS = credentials('docker-hub-credentials')  // ID của Docker Hub credentials
         GITHUB_CREDENTIALS = credentials('github-access-token')  // ID của GitHub credentials
-        KUBECONFIG_PATH = '/path/to/your/kubeconfig'  // Đường dẫn tới tệp kubeconfig (cập nhật theo hệ thống của bạn)
+        KUBECONFIG_PATH = '/root/.minikube/config'  // Đường dẫn tới tệp kubeconfig (cập nhật theo hệ thống của bạn)
     }
 
     stages {
